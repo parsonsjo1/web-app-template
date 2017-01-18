@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+repo.git"
+    "url": "git+https://github.com/parsonsjo1/web-app-template.git.git"
   },
   "author": "Josh Parsons",
   "license": "ISC",
   "bugs": {
-    "url": "repo/issues"
+    "url": "https://github.com/parsonsjo1/web-app-template.git/issues"
   },
-  "homepage": "repo#readme",
+  "homepage": "https://github.com/parsonsjo1/web-app-template.git#readme",
   "devDependencies": {
     "babel-preset-es2015": "^6.18.0",
     "babelify": "^7.3.0",
