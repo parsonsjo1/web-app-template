@@ -20,13 +20,15 @@ var uglify = require('gulp-uglify');
 
 var paths = {
     exclude: '!./node_modules/**',
-    html: 'src/*.html',
-    sass: './**/*.scss',
-    typescript: './**/*.ts'
+    html: './src/**/*.html',
+    images: './src/images/*.*',
+    sass: './src/**/*.scss',
+    typescript: './src/**/*.ts'
 };
 
 var watches = {
     html: 'html-watch',
+    images: 'images-watch',
     sass: 'sass-watch',
     typescript: 'typescript-watch'
 }
@@ -35,7 +37,7 @@ var watches = {
 
 /************************BrowserSync****************************/
 
-gulp.task('browser-sync', [watches.html,watches.typescript,watches.sass], function() {
+gulp.task('browser-sync', [watches.html,watches.images,watches.typescript,watches.sass], function() {
     browserSync.init({
         server: {
             baseDir: "./dist"
@@ -50,16 +52,32 @@ gulp.task('browser-sync', [watches.html,watches.typescript,watches.sass], functi
 /************************HTML Section***************************/
 
 gulp.task("copy-html", function () {
-    return gulp.src([paths.html, paths.exclude])
-        .pipe(gulp.dest("dist"));
+    return  gulp.src([paths.html, paths.exclude])
+            .pipe(gulp.dest("./dist"));
 });
 
 gulp.task(watches.html, ['copy-html'], function() {
-	browserSync.reload();
-	console.log("html reload complete");
+    browserSync.reload();
+    console.log("html reload complete");
 });
 
 /************************HTML Section***************************/
+
+
+
+/************************Images*********************************/
+
+gulp.task("copy-images", function () {
+    return  gulp.src([paths.images, paths.exclude])
+            .pipe(gulp.dest("./dist/images"));
+});
+
+gulp.task(watches.images, ['copy-images'], function() {
+    browserSync.reload();
+    console.log("images reload complete");
+});
+
+/************************Images***************************/
 
 
 
@@ -74,8 +92,8 @@ gulp.task('copy-sass', function () {
 });
 
 gulp.task(watches.sass, ['copy-sass'], function() {
-	browserSync.reload();
-	console.log("sass reload complete");
+    browserSync.reload();
+    console.log("sass reload complete");
 });
 
 /************************Sass***********************************/
@@ -116,7 +134,7 @@ function bundle() {
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('./dist'));
 }
 
 /************************Typescript*****************************/
@@ -126,9 +144,9 @@ function bundle() {
 /************************Watch Settings*************************/
 
 gulp.task('watch', ['browser-sync'], function() {
-	gulp.watch([paths.html,        paths.exclude], [watches.html]);
-	gulp.watch([paths.typescript,  paths.exclude], [watches.typescript]);
-	gulp.watch([paths.sass,        paths.exclude], [watches.sass]);
+    gulp.watch([paths.html,        paths.exclude], [watches.html]);
+    gulp.watch([paths.typescript,  paths.exclude], [watches.typescript]);
+    gulp.watch([paths.sass,        paths.exclude], [watches.sass]);
 });
 
 gulp.task('default', ['watch'], function () {
