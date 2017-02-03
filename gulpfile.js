@@ -1,6 +1,5 @@
 var browserify = require("browserify");
 var browserSync = require('browser-sync').create();
-var buffer = require('vinyl-buffer');
 
 var cleanCSS = require('gulp-clean-css');
 var concat = require('gulp-concat');
@@ -8,11 +7,6 @@ var concat = require('gulp-concat');
 var gulp = require('gulp');
 
 var sass = require('gulp-sass');
-var source = require('vinyl-source-stream');
-var sourcemaps = require('gulp-sourcemaps');
-
-var ts = require("gulp-typescript");
-var tsify = require("tsify");
 
 var uglify = require('gulp-uglify');
 
@@ -23,14 +17,14 @@ var paths = {
     html: './src/**/*.html',
     images: './src/images/*.*',
     sass: './src/**/*.scss',
-    typescript: './src/**/*.ts'
+    typescript: './src/**/*.js'
 };
 
 var watches = {
     html: 'html-watch',
     images: 'images-watch',
     sass: 'sass-watch',
-    typescript: 'typescript-watch'
+    javascript: 'javascript-watch'
 }
 
 
@@ -63,6 +57,21 @@ gulp.task(watches.html, ['copy-html'], function() {
 
 /************************HTML Section***************************/
 
+
+/************************Javascript*****************************/
+
+gulp.task('javascript', function() {
+     return  gulp.src([paths.javascript, paths.exclude])
+            .pipe(concat('all.js'))
+            .pipe(gulp.dest("./dist"));
+});
+
+gulp.task(watches.javascript, ['javascript'], function() {
+    browserSync.reload();
+    console.log("javascript reload complete");
+});
+
+/************************Javascript*****************************/
 
 
 /************************Images*********************************/
@@ -100,52 +109,11 @@ gulp.task(watches.sass, ['copy-sass'], function() {
 
 
 
-/************************Typescript*****************************/
-
-gulp.task('typescript', function() {
-    return bundle();
-});
-
-gulp.task(watches.typescript, ['typescript'], function() {
-    browserSync.reload();
-    console.log("typescript reload complete");
-});
-
-var browserify = browserify({
-    basedir: '.',
-    debug: true,
-    entries: ['src/main.ts'],
-    cache: {},
-    packageCache: {}
-}).plugin(tsify);
-
-function babelify() {
-    return browserify
-    .transform('babelify', {
-        presets: ['es2015'],
-        extensions: ['.ts']
-    });
-}
-
-function bundle() {
-    return babelify()
-    .bundle()
-    .pipe(source('bundle.js'))
-    .pipe(buffer())
-    .pipe(sourcemaps.init({loadMaps: true}))
-    .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest('./dist'));
-}
-
-/************************Typescript*****************************/
-
-
-
 /************************Watch Settings*************************/
 
 gulp.task('watch', ['browser-sync'], function() {
     gulp.watch([paths.html,        paths.exclude], [watches.html]);
-    gulp.watch([paths.typescript,  paths.exclude], [watches.typescript]);
+    gulp.watch([paths.javascript,  paths.exclude], [watches.javascript]);
     gulp.watch([paths.sass,        paths.exclude], [watches.sass]);
 });
 
